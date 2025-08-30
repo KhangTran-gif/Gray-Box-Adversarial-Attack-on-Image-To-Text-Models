@@ -1,15 +1,19 @@
-# I See Dead People: Gray-Box Adversarial Attack on Image-To-Text Models
+# Adversarial Attacks on BLIP-2: A Gray-Box Approach for Image-to-Text Models
 
-## This paper was accepted to European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases 2023 (ECML-PKDD 2023)
+## Research Project – Based on and extending the work “I See Dead People: Gray-Box Adversarial Attack on Image-To-Text Models” (ECML-PKDD 2023)
 
-Code accompanying the paper:
+This repository contains code and experiments for adversarial attacks on modern image-to-text systems, focusing on the BLIP-2 model.
+Our implementation adapts and extends the gray-box attack framework from:
 [I See Dead People: Gray-Box Adversarial Attack on Image-To-Text Models", ECML-PKDD Machine Learning and Cybersecurity Workshop, 2023](https://arxiv.org/abs/2306.07591).
 
 ### Abstract:
-Modern image-to-text systems typically adopt the encoder-decoder framework, which comprises two main components: an image encoder, responsible for extracting image features, and a transformer-based decoder, used for generating captions. Taking inspiration from the analysis of neural networks' robustness against adversarial perturbations, we propose a novel gray-box algorithm for creating adversarial examples in image-to-text models. Unlike image classification tasks that have a finite set of class labels, finding visually similar adversarial examples in an image-to-text task poses greater challenges because the captioning system allows for a virtually infinite space of possible captions. In this paper, we present a gray-box adversarial attack on image-to-text, both untargeted and targeted. We formulate the process of discovering adversarial perturbations as an optimization problem that uses only the image-encoder component, meaning the proposed attack is language-model agnostic. Through experiments conducted on the ViT-GPT2 model, which is the most-used image-to-text model in Hugging Face, and the Flickr30k dataset, we demonstrate that our proposed attack successfully generates visually similar adversarial examples, both with untargeted and targeted captions. Notably, our attack operates in a gray-box manner, requiring no knowledge about the decoder module. We also show that our attacks fool the popular open-source platform Hugging Face.
+Image-to-text models such as BLIP-2 represent a new generation of captioning systems that combine strong vision encoders with large language models for accurate and fluent caption generation. Despite their advancements, these models remain vulnerable to adversarial perturbations.
+We present a gray-box adversarial attack targeting BLIP-2, extending prior work on ViT-GPT2. Unlike text classification attacks, adversarial image captioning is challenging due to the open-ended output space of natural language. Our attack leverages only the image encoder for optimization, making it decoder-agnostic and effective across different captioning models.
+We implement a Projected Gradient Descent (PGD)-based optimization with hybrid L2 and L∞ constraints, combined with semantic losses based on CLIP and Sentence-BERT (SBERT). This allows perturbations to be both semantically guided and visually imperceptible.
+Experiments on the Flickr30k dataset show that our attack can successfully fool BLIP-2 into producing targeted captions, while maintaining strong imperceptibility under norm constraints.
 
 ## Prerequisites
-    conda create -n isdp python=3.10.9
+    conda create -n blip2_env python=3.10.9
     pip install -r requirements.txt
 
 ## Download the Flickr30k dataset
@@ -17,14 +21,13 @@ Modern image-to-text systems typically adopt the encoder-decoder framework, whic
 2. Update the FLICKR_PATH variable in utils.py accordingly
 
 ## Run
-    python attack_targeted.py/attack_untargeted.py --model=<model_name> --dataset=<dataset_name> --eps=<epsilon> --n_epochs=<num_epochs> --n_imgs=<n_images>
-
-    python attack_targeted.py --model=blip2 --dataset=flickr30k --eps=100 --n_epochs=1000 --n_imgs=1000
+    python attack_targeted.py --model=<model_name> --dataset=<dataset_name> --eps=<epsilon> --n_epochs=<num_epochs> --n_imgs=<n_images>
 
 - The values used in the paper are:
-  - model=vit-gpt2
+  - model=blip2
   - dataset=flickr30k
-  - n_epochs=1000
+  - eps= 0.12-0.2
+  - n_epochs=300
   - images=1000
 
 If you wish to cite this paper:
